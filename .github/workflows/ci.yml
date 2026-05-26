@@ -1,0 +1,75 @@
+name: CI
+
+# Chạy mỗi khi push hoặc mở pull request.
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # Biến môi trường cho CI: dùng SQLite (không cần MySQL), secret giả.
+    env:
+      DATABASE_URL: "sqlite:///./ci.db"
+      JWT_SECRET: "ci-access-secret"
+      JWT_REFRESH_SECRET: "ci-refresh-secret"
+      APP_ENV: "development"
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Cài dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile check (bắt lỗi cú pháp)
+        run: python -m compileall app scripts
+
+      - name: Smoke test API
+        run: |
+          set -e
+          # Khởi động server nền (SQLite)
+          uvicorn app.main:app --port 8000 &
+          SERVER_PID=$!
+
+          # Đợi server sẵn sàng (tối đa 20 giây)
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8000/health > /dev/null 2>&1; then
+              echo "Server đã sẵn sàng."
+              break
+            fi
+            sleep 1
+          done
+
+          echo "--- /health ---"
+          curl -fsS http://localhost:8000/health; echo
+
+          echo "--- POST /api/register (kỳ vọng 201) ---"
+          curl -fsS -X POST http://localhost:8000/api/register \
+            -H "Content-Type: application/json" \
+            -d '{"username":"ci_user","email":"ci@example.com","password":"CiPass@123"}'; echo
+
+          echo "--- POST /api/login (kỳ vọng 200) ---"
+          curl -fsS -X POST http://localhost:8000/api/login \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci@example.com","password":"CiPass@123"}'; echo
+
+          echo "--- GET /api/profile không token (kỳ vọng 401) ---"
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/api/profile)
+          if [ "$CODE" != "401" ]; then
+            echo "FAIL: mong đợi 401, nhận $CODE"
+            kill $SERVER_PID
+            exit 1
+          fi
+          echo "OK: 401 đúng như kỳ vọng"
+
+          kill $SERVER_PID
