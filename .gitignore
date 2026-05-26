@@ -1,0 +1,16 @@
+# Virtualenv
+.venv/
+
+# Biến môi trường & bí mật
+.env
+
+# Database SQLite (sinh lúc chạy)
+*.db
+auth.db
+
+# Log email giả lập
+sent-emails.log
+
+# Python cache
+__pycache__/
+*.pyc

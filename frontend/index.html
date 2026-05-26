@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Auth — Premium Access</title>
+
+  <!-- Fonts: Sora (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Lớp nền: aurora gradient động + hạt lơ lửng -->
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-particles" id="particles" aria-hidden="true"></div>
+
+  <!-- Splash loader (hiện lúc auto-login đầu trang) -->
+  <div class="app-loader" id="app-loader">
+    <div class="loader-ring"></div>
+    <p class="loader-text">Đang khởi tạo phiên…</p>
+  </div>
+
+  <main class="auth-layout">
+    <!-- ===== Cột thương hiệu (ẩn trên màn hình nhỏ) ===== -->
+    <section class="brand-panel">
+      <div class="brand-content">
+        <div class="brand-logo" aria-hidden="true">◆</div>
+        <h1 class="brand-title">Aurora<span class="grad-text">Auth</span></h1>
+        <p class="brand-tagline">Truy cập an toàn, trải nghiệm cao cấp. Bảo mật chuẩn doanh nghiệp với thiết kế tinh tế.</p>
+        <ul class="brand-features">
+          <li><span class="dot"></span> Token kép &amp; mã hoá bcrypt</li>
+          <li><span class="dot"></span> Đăng nhập tức thì, ghi nhớ phiên</li>
+          <li><span class="dot"></span> Khôi phục mật khẩu bằng OTP</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Thẻ kính chứa các form ===== -->
+    <section class="auth-card glass">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="login" role="tab">Đăng nhập</button>
+        <button class="tab-btn" data-tab="register" role="tab">Đăng ký</button>
+        <span class="tab-indicator" aria-hidden="true"></span>
+      </div>
+
+      <!-- Form Đăng nhập -->
+      <form id="login-form" class="auth-form active" novalidate>
+        <h2>Chào mừng trở lại 👋</h2>
+        <p class="subtitle">Đăng nhập để tiếp tục hành trình của bạn</p>
+
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" name="email" placeholder="you@example.com" autocomplete="email" />
+          <span class="error-msg" data-for="login-email"></span>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Mật khẩu</label>
+          <input type="password" id="login-password" name="password" placeholder="••••••••" autocomplete="current-password" />
+          <span class="error-msg" data-for="login-password"></span>
+        </div>
+
+        <button type="submit" class="btn-primary"><span class="btn-label">Đăng nhập</span></button>
+        <p class="form-foot"><a href="#" id="forgot-link" class="link">Quên mật khẩu?</a></p>
+      </form>
+
+      <!-- Form Đăng ký -->
+      <form id="register-form" class="auth-form" novalidate>
+        <h2>Tạo tài khoản mới ✨</h2>
+        <p class="subtitle">Chỉ mất chưa đến một phút</p>
+
+        <div class="field">
+          <label for="register-username">Tên đăng nhập</label>
+          <input type="text" id="register-username" name="username" placeholder="vd: vinh_nguyen" autocomplete="username" />
+          <span class="error-msg" data-for="register-username"></span>
+        </div>
+
+        <div class="field">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" name="email" placeholder="you@example.com" autocomplete="email" />
+          <span class="error-msg" data-for="register-email"></span>
+        </div>
+
+        <div class="field">
+          <label for="register-password">Mật khẩu</label>
+          <input type="password" id="register-password" name="password" placeholder="≥8 ký tự, có chữ, số &amp; ký tự đặc biệt" autocomplete="new-password" />
+          <span class="error-msg" data-for="register-password"></span>
+        </div>
+
+        <div class="field">
+          <label for="register-confirm">Xác nhận mật khẩu</label>
+          <input type="password" id="register-confirm" name="confirm" placeholder="Nhập lại mật khẩu" autocomplete="new-password" />
+          <span class="error-msg" data-for="register-confirm"></span>
+        </div>
+
+        <button type="submit" class="btn-primary"><span class="btn-label">Đăng ký</span></button>
+      </form>
+
+      <!-- Màn hình Quên mật khẩu (2 bước) -->
+      <div id="forgot-screen" class="auth-form">
+        <form id="forgot-request-form" novalidate>
+          <h2>Quên mật khẩu 🔑</h2>
+          <p class="subtitle">Nhập email để nhận mã OTP (hết hạn sau 5 phút)</p>
+          <div class="field">
+            <label for="forgot-email">Email</label>
+            <input type="email" id="forgot-email" name="email" placeholder="you@example.com" autocomplete="email" />
+            <span class="error-msg" data-for="forgot-email"></span>
+          </div>
+          <button type="submit" class="btn-primary"><span class="btn-label">Gửi mã OTP</span></button>
+        </form>
+
+        <form id="forgot-reset-form" class="hidden" novalidate>
+          <h2>Đặt lại mật khẩu</h2>
+          <p class="subtitle">Nhập mã OTP đã gửi tới <strong id="forgot-sent-to"></strong></p>
+          <div class="field">
+            <label for="reset-otp">Mã OTP (6 chữ số)</label>
+            <input type="text" id="reset-otp" name="otp" inputmode="numeric" maxlength="6" placeholder="123456" />
+            <span class="error-msg" data-for="reset-otp"></span>
+          </div>
+          <div class="field">
+            <label for="reset-password">Mật khẩu mới</label>
+            <input type="password" id="reset-password" name="password" placeholder="≥8 ký tự, có chữ, số &amp; ký tự đặc biệt" autocomplete="new-password" />
+            <span class="error-msg" data-for="reset-password"></span>
+          </div>
+          <div class="field">
+            <label for="reset-confirm">Xác nhận mật khẩu mới</label>
+            <input type="password" id="reset-confirm" name="confirm" placeholder="Nhập lại mật khẩu" autocomplete="new-password" />
+            <span class="error-msg" data-for="reset-confirm"></span>
+          </div>
+          <button type="submit" class="btn-primary"><span class="btn-label">Đặt lại mật khẩu</span></button>
+        </form>
+
+        <p class="form-foot"><a href="#" id="back-to-login" class="link">← Quay lại đăng nhập</a></p>
+      </div>
+
+      <!-- Màn hình khi đã đăng nhập -->
+      <div id="welcome-box" class="welcome-box">
+        <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true"></div>
+        <h2>Đăng nhập thành công 🎉</h2>
+        <p class="welcome-line">Xin chào, <strong id="welcome-name"></strong> <span id="welcome-role" class="role-badge"></span></p>
+        <p class="subtitle" id="welcome-email"></p>
+        <button id="logout-btn" class="btn-secondary"><span class="btn-label">Đăng xuất</span></button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
