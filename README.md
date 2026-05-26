@@ -121,7 +121,9 @@ python -m scripts.make_admin <email>
 
 > **Lưu ý:** GitHub chỉ lưu code — KHÔNG đẩy file database hay `.env` lên. Khi deploy, dùng Postgres do Render cấp và đặt secret qua Environment Variables.
 
-Repo có sẵn **Blueprint** [`render.yaml`](render.yaml) (web service FastAPI + Postgres). Các bước:
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/TechNovaV/auth-fastapi)
+
+Repo có sẵn **Blueprint** [`render.yaml`](render.yaml) (web service FastAPI + Postgres). Bấm nút trên (hoặc làm thủ công), rồi đăng nhập Render và **Apply**. Các bước:
 
 1. Vào [dashboard.render.com](https://dashboard.render.com) → **New +** → **Blueprint** → chọn repo `auth-fastapi`.
 2. Render đọc `render.yaml`, tự tạo: 1 Postgres `auth-db` + 1 web service, tự sinh `JWT_SECRET`/`JWT_REFRESH_SECRET`, tự nối `DATABASE_URL`.
