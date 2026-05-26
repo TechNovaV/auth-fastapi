@@ -1,0 +1,34 @@
+name: Keep Alive
+
+# Ping endpoint /health định kỳ để web service trên Render không "ngủ".
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # mỗi 10 phút (giờ UTC; GitHub có thể trễ vài phút)
+  workflow_dispatch: {}        # cho phép bấm chạy tay
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        env:
+          # Đặt URL gốc của app vào: Settings -> Secrets and variables -> Actions -> Variables
+          # Tên biến: KEEPALIVE_URL  (vd: https://auth-fastapi.onrender.com)
+          URL: ${{ vars.KEEPALIVE_URL }}
+        run: |
+          if [ -z "$URL" ]; then
+            echo "Chưa đặt biến KEEPALIVE_URL -> bỏ qua (không lỗi)."
+            exit 0
+          fi
+          echo "Ping ${URL%/}/health"
+          # Thử tối đa 3 lần phòng khi server đang cold-start.
+          for i in 1 2 3; do
+            if curl -fsS --max-time 60 "${URL%/}/health"; then
+              echo; echo "OK"
+              exit 0
+            fi
+            echo "Lần $i thất bại, thử lại sau 15s..."
+            sleep 15
+          done
+          echo "Ping thất bại sau 3 lần."
+          exit 1
