@@ -1,5 +1,7 @@
 # Auth System — FastAPI + MySQL + HTML/CSS/JS (Clean Architecture)
 
+[![CI](https://github.com/TechNovaV/auth-fastapi/actions/workflows/ci.yml/badge.svg)](https://github.com/TechNovaV/auth-fastapi/actions/workflows/ci.yml)
+
 Hệ thống Đăng nhập / Đăng ký an toàn: **Python (FastAPI)** + **MySQL** (qua SQLAlchemy ORM) và **Frontend HTML/CSS/JS thuần** (Clean Architecture 3 tầng + state management). FastAPI phục vụ luôn frontend nên chạy cùng origin.
 
 > Dùng SQLAlchemy ORM nên đổi DB chỉ cần đổi `DATABASE_URL` (MySQL ⇄ SQLite). Vì máy chưa cài MySQL, `.env` mặc định dùng **SQLite** để chạy được ngay; khi có MySQL thì bỏ comment dòng MySQL.
