@@ -1,0 +1,32 @@
+# Render Blueprint — deploy 1 chạm: web service (FastAPI) + Postgres.
+# Dùng: Render Dashboard -> New + -> Blueprint -> chọn repo này.
+databases:
+  - name: auth-db
+    plan: free
+    databaseName: auth_db
+    user: auth_user
+
+services:
+  - type: web
+    name: auth-fastapi
+    runtime: python
+    plan: free
+    region: singapore                      # gần Việt Nam (có thể đổi: oregon/frankfurt...)
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: APP_ENV
+        value: production                  # bật cờ Secure cho cookie (Render dùng HTTPS)
+      - key: DATABASE_URL                   # tự lấy chuỗi kết nối từ Postgres ở trên
+        fromDatabase:
+          name: auth-db
+          property: connectionString
+      - key: JWT_SECRET                     # Render tự sinh chuỗi ngẫu nhiên
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS                   # tự điền domain sau khi biết URL (frontend cùng origin nên không bắt buộc)
+        sync: false

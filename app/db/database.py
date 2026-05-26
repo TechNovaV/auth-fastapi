@@ -8,13 +8,21 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 from app.core.config import settings
 
+# Chuẩn hoá URL Postgres: Render/Heroku trả "postgres://" nhưng SQLAlchemy 2.0
+# yêu cầu "postgresql://" và cần khai báo driver (psycopg2).
+db_url = settings.database_url
+if db_url.startswith("postgres://"):
+    db_url = "postgresql+psycopg2://" + db_url[len("postgres://"):]
+elif db_url.startswith("postgresql://"):
+    db_url = "postgresql+psycopg2://" + db_url[len("postgresql://"):]
+
 # SQLite cần check_same_thread=False khi dùng trong web server đa luồng.
 connect_args = {}
-if settings.database_url.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_engine(
-    settings.database_url,
+    db_url,
     connect_args=connect_args,
     pool_pre_ping=True,  # tự kiểm tra kết nối "chết" trước khi dùng
 )

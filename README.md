@@ -117,6 +117,21 @@ python -m scripts.make_admin <email>
 - **Chống SQL/NoSQL Injection:** SQLAlchemy ORM tham số hoá toàn bộ truy vấn + Pydantic validate kiểu/định dạng đầu vào.
 - **Quên mật khẩu:** OTP 6 số ngẫu nhiên (`secrets`), chỉ lưu **hash**, hết hạn **5 phút**, giới hạn 5 lần nhập sai, thông báo lỗi chung chống dò email.
 
+## Deploy lên Render (online)
+
+> **Lưu ý:** GitHub chỉ lưu code — KHÔNG đẩy file database hay `.env` lên. Khi deploy, dùng Postgres do Render cấp và đặt secret qua Environment Variables.
+
+Repo có sẵn **Blueprint** [`render.yaml`](render.yaml) (web service FastAPI + Postgres). Các bước:
+
+1. Vào [dashboard.render.com](https://dashboard.render.com) → **New +** → **Blueprint** → chọn repo `auth-fastapi`.
+2. Render đọc `render.yaml`, tự tạo: 1 Postgres `auth-db` + 1 web service, tự sinh `JWT_SECRET`/`JWT_REFRESH_SECRET`, tự nối `DATABASE_URL`.
+3. Bấm **Apply** → chờ build (`pip install` + khởi động `uvicorn`). Bảng tự tạo lúc khởi động (`create_all`).
+4. Mở URL Render cấp (vd `https://auth-fastapi.onrender.com`) → giao diện chạy online; API ở `/api/*`, docs ở `/docs`.
+
+Tuỳ chọn: đặt `CORS_ORIGINS` = URL Render (chỉ cần nếu tách frontend khác origin). Gói free: web service "ngủ" sau ~15 phút không truy cập (cold start chậm lần đầu) và Postgres free hết hạn sau 90 ngày.
+
+> Code dùng SQLAlchemy nên cùng codebase chạy được SQLite (local) ↔ Postgres (Render) ↔ MySQL — chỉ khác `DATABASE_URL`. `database.py` tự chuẩn hoá `postgres://` → `postgresql+psycopg2://`.
+
 ## Đã kiểm thử
 
 **Backend (curl, DB SQLite):** register (422 yếu / 201 + cookie), login (last_login cập nhật), profile (401/200), refresh (cookie), brute force (429 sau 5 lần), forgot→reset (đổi mật khẩu, login mới 200/cũ 401, reuse OTP 400), RBAC (user 403 / admin 200 + danh sách). ✅
