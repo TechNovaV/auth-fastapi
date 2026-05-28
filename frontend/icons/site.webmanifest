@@ -1,0 +1,12 @@
+{
+  "name": "Peak",
+  "short_name": "Peak",
+  "description": "Peak — Premium Access. Đăng nhập an toàn, trải nghiệm cao cấp.",
+  "icons": [
+    { "src": "/icons/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0B0F1A",
+  "background_color": "#0B0F1A",
+  "display": "standalone"
+}

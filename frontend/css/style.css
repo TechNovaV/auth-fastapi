@@ -1,6 +1,7 @@
 /* =====================================================================
-   AURORA AUTH — Premium UI (Dark Mode + Glassmorphism)
-   Hệ màu 60-30-10 · Font: Sora (display) + Inter (body)
+   PEAK — Premium UI (Dark Mode + Glassmorphism)
+   Brand: #F860C0 (Peak Pink — sample từ logo wordmark)
+   Hệ 60-30-10 · Font: Sora (display) + Inter (body)
    ===================================================================== */
 
 :root {
@@ -17,11 +18,12 @@
   --text: #EDF1F8;
   --muted: #97A0B5;
 
-  /* 10% — Màu nhấn (accent / CTA) */
-  --accent: #7C3AED;
-  --accent-2: #6366F1;
-  --accent-3: #22D3EE;
-  --grad-cta: linear-gradient(135deg, #7C3AED 0%, #6366F1 55%, #22D3EE 100%);
+  /* 10% — Peak Pink (màu thương hiệu) + violet phụ */
+  --brand: #F860C0;
+  --brand-light: #FF8FD0;
+  --brand-deep: #B83A8E;
+  --accent-2: #7C3AED;
+  --grad-cta: linear-gradient(135deg, #F860C0 0%, #B83A8E 55%, #7C3AED 100%);
 
   /* Phản hồi */
   --success: #34D399;
@@ -31,7 +33,7 @@
   --radius: 18px;
   --radius-sm: 12px;
   --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.55);
-  --ring: 0 0 0 4px rgba(124, 58, 237, 0.28);
+  --ring: 0 0 0 4px rgba(248, 96, 192, 0.28);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -52,19 +54,30 @@ body {
   position: relative;
 }
 
-h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
+h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
+
+/* Tiện ích screen-reader-only (giữ a11y khi logo là hình ảnh) */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* =====================================================================
-   NỀN: Aurora gradient động + hạt lơ lửng
+   NỀN: Aurora pink + hạt
    ===================================================================== */
 .bg-aurora {
   position: fixed;
   inset: -20%;
   z-index: -2;
   background:
-    radial-gradient(40% 40% at 20% 25%, rgba(124, 58, 237, 0.45), transparent 60%),
-    radial-gradient(35% 35% at 80% 20%, rgba(34, 211, 238, 0.30), transparent 60%),
-    radial-gradient(45% 45% at 70% 80%, rgba(99, 102, 241, 0.40), transparent 60%),
+    radial-gradient(40% 40% at 20% 25%, rgba(248, 96, 192, 0.40), transparent 60%),
+    radial-gradient(35% 35% at 80% 20%, rgba(124, 58, 237, 0.28), transparent 60%),
+    radial-gradient(45% 45% at 70% 80%, rgba(184, 58, 142, 0.36), transparent 60%),
     linear-gradient(160deg, var(--bg-900), var(--bg-800) 55%, var(--bg-700));
   filter: saturate(120%);
   animation: aurora-drift 18s var(--ease) infinite alternate;
@@ -84,7 +97,8 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   width: var(--size, 6px);
   height: var(--size, 6px);
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(124, 58, 237, 0.5));
+  /* Hạt nhuốm hồng để hợp brand Peak */
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(248, 96, 192, 0.55));
   opacity: 0;
   animation: float-up var(--duration, 16s) linear infinite;
   animation-delay: var(--delay, 0s);
@@ -99,7 +113,7 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 }
 
 /* =====================================================================
-   SPLASH LOADER (auto-login)
+   SPLASH LOADER
    ===================================================================== */
 .app-loader {
   position: fixed;
@@ -110,7 +124,7 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   gap: 18px;
   align-items: center;
   justify-content: center;
-  background: rgba(11, 15, 26, 0.85);
+  background: rgba(11, 15, 26, 0.88);
   backdrop-filter: blur(8px);
   transition: opacity 0.5s var(--ease), visibility 0.5s;
 }
@@ -121,8 +135,8 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   height: 56px;
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.12);
-  border-top-color: var(--accent-3);
-  border-right-color: var(--accent);
+  border-top-color: var(--brand);
+  border-right-color: var(--brand-light);
   animation: spin 0.9s linear infinite;
 }
 .loader-text { color: var(--muted); font-size: 14px; letter-spacing: 0.02em; }
@@ -130,11 +144,11 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* =====================================================================
-   LAYOUT — Grid tỷ lệ vàng, responsive
+   LAYOUT — Grid tỷ lệ vàng
    ===================================================================== */
 .auth-layout {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1160px;
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(24px, 4vw, 56px);
@@ -142,14 +156,12 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 }
 
 @media (min-width: 980px) {
-  .auth-layout {
-    /* ~ tỷ lệ vàng giữa cột thương hiệu và thẻ đăng nhập */
-    grid-template-columns: 1.618fr 1fr;
-  }
+  /* Tỷ lệ vàng: brand : card ≈ 1.618 : 1 */
+  .auth-layout { grid-template-columns: 1.618fr 1fr; }
 }
 
 /* =====================================================================
-   CỘT THƯƠNG HIỆU
+   CỘT THƯƠNG HIỆU + Wordmark hero
    ===================================================================== */
 .brand-panel { display: none; }
 
@@ -157,35 +169,41 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   .brand-panel { display: block; animation: rise-in 0.8s var(--ease) both; }
 }
 
-.brand-logo {
-  width: 64px;
-  height: 64px;
-  display: grid;
-  place-items: center;
-  font-size: 30px;
-  color: #fff;
-  border-radius: 18px;
-  background: var(--grad-cta);
-  box-shadow: 0 14px 40px rgba(124, 58, 237, 0.55);
-  margin-bottom: 26px;
-  animation: pulse-glow 3.2s ease-in-out infinite;
+.brand-h1 { display: block; margin-bottom: 26px; }
+
+/* Wordmark Peak ở hero — kích thước lớn, sắc nét, có glow nhịp đập tinh tế. */
+.brand-wordmark {
+  width: clamp(220px, 26vw, 360px);
+  height: auto;
+  display: block;
+  /* Glow êm ái quanh wordmark — drop-shadow tô vào pixel pink của logo. */
+  filter:
+    drop-shadow(0 0 18px rgba(248, 96, 192, 0.55))
+    drop-shadow(0 0 40px rgba(248, 96, 192, 0.25));
+  animation: logo-pulse 4s ease-in-out infinite;
+  transition: transform 0.4s var(--ease);
+}
+.brand-wordmark:hover { transform: scale(1.02); }
+
+@keyframes logo-pulse {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(248, 96, 192, 0.45)) drop-shadow(0 0 40px rgba(248, 96, 192, 0.20)); }
+  50%      { filter: drop-shadow(0 0 28px rgba(248, 96, 192, 0.75)) drop-shadow(0 0 60px rgba(248, 96, 192, 0.35)); }
 }
 
-.brand-title { font-size: clamp(40px, 5vw, 60px); font-weight: 800; line-height: 1.02; }
-.grad-text {
-  background: var(--grad-cta);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.brand-tagline {
+  color: var(--muted);
+  font-size: clamp(15px, 1.4vw, 18px);
+  margin: 4px 0 28px;
+  max-width: 46ch;
+  line-height: 1.6;
 }
-.brand-tagline { color: var(--muted); font-size: clamp(15px, 1.4vw, 18px); margin: 18px 0 28px; max-width: 46ch; line-height: 1.6; }
 
 .brand-features { list-style: none; display: flex; flex-direction: column; gap: 14px; }
 .brand-features li { display: flex; align-items: center; gap: 12px; color: var(--text); font-size: 15px; }
 .brand-features .dot {
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--grad-cta);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.8);
+  box-shadow: 0 0 12px rgba(248, 96, 192, 0.75);
 }
 
 /* =====================================================================
@@ -206,19 +224,41 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   overflow: hidden;
   animation: rise-in 0.7s var(--ease) both;
 }
-/* Viền sáng tinh tế ở mép trên thẻ */
 .auth-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
 }
 
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Brand mark nhỏ trong card — chỉ hiện ở mobile (khi brand-panel ẩn). */
+.card-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.card-brand-mark {
+  width: 44px; height: 44px;
+  filter: drop-shadow(0 0 10px rgba(248, 96, 192, 0.55));
+}
+.card-brand-name {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  background: var(--grad-cta);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 980px) { .card-brand { display: none; } }
 
 /* ===== Tabs với thanh trượt ===== */
 .tabs {
@@ -256,10 +296,9 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   height: calc(100% - 10px);
   border-radius: 9px;
   background: var(--grad-cta);
-  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 8px 22px rgba(248, 96, 192, 0.5);
   transition: transform 0.38s var(--ease);
 }
-/* Trượt indicator sang phải khi tab "register" active (không cần JS) */
 .tabs:has(.tab-btn[data-tab="register"].active) .tab-indicator { transform: translateX(100%); }
 
 /* ===== Form ===== */
@@ -274,7 +313,7 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 
 .field { display: flex; flex-direction: column; gap: 7px; }
 .field label { font-size: 13.5px; font-weight: 600; color: var(--muted); transition: color 0.25s var(--ease); }
-.field:focus-within label { color: var(--accent-3); }
+.field:focus-within label { color: var(--brand-light); }
 
 .field input {
   width: 100%;
@@ -290,7 +329,7 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 .field input::placeholder { color: #5b6478; }
 .field input:focus {
   outline: none;
-  border-color: var(--accent-2);
+  border-color: var(--brand);
   background: rgba(0, 0, 0, 0.4);
   box-shadow: var(--ring);
 }
@@ -316,12 +355,11 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
   color: #fff;
   background: var(--grad-cta);
   background-size: 180% 180%;
-  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 12px 30px rgba(248, 96, 192, 0.45);
   animation: cta-pulse 3s ease-in-out infinite;
 }
-.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 18px 40px rgba(99, 102, 241, 0.6); }
+.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 18px 40px rgba(248, 96, 192, 0.6); }
 .btn-primary:active { transform: translateY(0) scale(0.99); }
-/* Quét sáng khi hover */
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -334,8 +372,8 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 .btn-primary:hover::before { left: 130%; }
 
 @keyframes cta-pulse {
-  0%, 100% { box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4); }
-  50%      { box-shadow: 0 12px 38px rgba(124, 58, 237, 0.65); }
+  0%, 100% { box-shadow: 0 12px 30px rgba(248, 96, 192, 0.40); }
+  50%      { box-shadow: 0 12px 38px rgba(248, 96, 192, 0.65); }
 }
 
 .btn-secondary {
@@ -346,7 +384,7 @@ h1, h2, .brand-title { font-family: 'Sora', sans-serif; letter-spacing: -0.02em;
 }
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-2px); }
 
-/* Trạng thái loading: ẩn chữ, hiện spinner (dùng :disabled khi đang submit) */
+/* Trạng thái loading: ẩn label, hiện spinner */
 button:disabled { cursor: not-allowed; animation: none; }
 .btn-primary:disabled, .btn-secondary:disabled { filter: saturate(0.7) brightness(0.95); transform: none; }
 button:disabled .btn-label { opacity: 0; }
@@ -362,10 +400,16 @@ button:disabled::after {
   animation: spin 0.7s linear infinite;
 }
 
-/* ===== Form footer / link ===== */
+/* ===== Footer / link ===== */
 .form-foot { margin-top: 14px; text-align: center; font-size: 14px; }
-.link { color: var(--accent-3); text-decoration: none; font-weight: 600; cursor: pointer; transition: color 0.2s, text-shadow 0.2s; }
-.link:hover { color: #fff; text-shadow: 0 0 12px rgba(34, 211, 238, 0.6); }
+.link {
+  color: var(--brand-light);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.link:hover { color: #fff; text-shadow: 0 0 12px rgba(248, 96, 192, 0.6); }
 
 .hidden { display: none !important; }
 
@@ -380,15 +424,10 @@ button:disabled::after {
   font-family: 'Sora', sans-serif;
   font-size: 30px; font-weight: 700; color: #fff;
   background: var(--grad-cta);
-  box-shadow: 0 14px 36px rgba(124, 58, 237, 0.55);
-  animation: pulse-glow 3s ease-in-out infinite;
+  box-shadow: 0 14px 36px rgba(248, 96, 192, 0.55);
+  animation: cta-pulse 3.2s ease-in-out infinite;
 }
 .welcome-line { font-size: 16px; }
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 14px 34px rgba(124, 58, 237, 0.45); }
-  50%      { box-shadow: 0 14px 46px rgba(34, 211, 238, 0.6); }
-}
 
 .role-badge {
   display: inline-block;
@@ -404,7 +443,7 @@ button:disabled::after {
 .role-badge.admin { background: var(--grad-cta); border: none; color: #fff; }
 
 /* =====================================================================
-   TOAST / SNACKBAR cao cấp (glass + icon + progress)
+   TOAST premium (glass + icon + progress bar)
    ===================================================================== */
 .toast-container {
   position: fixed;
@@ -420,7 +459,7 @@ button:disabled::after {
   padding: 14px 16px;
   border-radius: 14px;
   color: var(--text);
-  background: rgba(19, 26, 44, 0.7);
+  background: rgba(19, 26, 44, 0.72);
   border: 1px solid var(--border);
   backdrop-filter: blur(16px);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
@@ -437,10 +476,9 @@ button:disabled::after {
   font-size: 16px; font-weight: 700; color: #fff;
 }
 .toast.success .toast-icon { background: rgba(52, 211, 153, 0.22); color: var(--success); }
-.toast.error .toast-icon { background: rgba(251, 113, 133, 0.22); color: var(--error); }
+.toast.error   .toast-icon { background: rgba(251, 113, 133, 0.22); color: var(--error); }
 .toast .toast-msg { font-size: 14px; line-height: 1.4; }
 
-/* Thanh tiến trình tự rút */
 .toast .toast-bar {
   position: absolute;
   left: 0; bottom: 0;
@@ -449,15 +487,13 @@ button:disabled::after {
   animation: toast-bar 3.5s linear forwards;
 }
 .toast.success .toast-bar { background: var(--success); }
-.toast.error .toast-bar { background: var(--error); }
+.toast.error   .toast-bar { background: var(--error); }
 
-@keyframes toast-in { from { opacity: 0; transform: translateX(120%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toast-in  { from { opacity: 0; transform: translateX(120%); } to { opacity: 1; transform: translateX(0); } }
 @keyframes toast-out { to { opacity: 0; transform: translateX(120%); } }
 @keyframes toast-bar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 
-/* =====================================================================
-   SKELETON shimmer (tiện ích loading dùng lại)
-   ===================================================================== */
+/* ===== Skeleton shimmer (utility) ===== */
 .skeleton {
   background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.14) 37%, rgba(255,255,255,0.05) 63%);
   background-size: 400% 100%;
@@ -474,9 +510,8 @@ button:disabled::after {
   .toast-container { left: 16px; right: 16px; top: 16px; max-width: none; }
 }
 
-:focus-visible { outline: 2px solid var(--accent-3); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 2px; }
 
-/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

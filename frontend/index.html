@@ -3,7 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aurora Auth — Premium Access</title>
+  <title>Peak — Premium Access</title>
+  <meta name="description" content="Peak — đăng nhập an toàn, trải nghiệm cao cấp." />
+  <meta name="theme-color" content="#0B0F1A" />
+
+  <!-- ===== Brand identity: favicons & PWA manifest =====
+       Bộ icon dạng monogram "P" (outline pink) — đồng style với wordmark
+       hero ở trang. Trình duyệt sẽ tự chọn cỡ phù hợp cho từng vị trí:
+        - favicon-16x16.png / 32x32.png: tab trình duyệt
+        - favicon.ico:                   fallback cho browser cũ
+        - apple-touch-icon.png:          home screen iOS / Safari pinned tab
+        - android-chrome-*.png:          home screen Android, PWA install
+        - site.webmanifest:              metadata PWA (name "Peak", màu chủ đạo)
+  -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
+  <link rel="shortcut icon" href="icons/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+  <link rel="manifest" href="icons/site.webmanifest" />
 
   <!-- Fonts: Sora (display) + Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,29 +34,50 @@
   <div class="bg-aurora" aria-hidden="true"></div>
   <div class="bg-particles" id="particles" aria-hidden="true"></div>
 
-  <!-- Splash loader (hiện lúc auto-login đầu trang) -->
+  <!-- Splash loader (auto-login lần đầu) -->
   <div class="app-loader" id="app-loader">
     <div class="loader-ring"></div>
     <p class="loader-text">Đang khởi tạo phiên…</p>
   </div>
 
   <main class="auth-layout">
-    <!-- ===== Cột thương hiệu (ẩn trên màn hình nhỏ) ===== -->
+    <!-- ===== Cột thương hiệu (ẩn ở màn hình nhỏ) ===== -->
     <section class="brand-panel">
       <div class="brand-content">
-        <div class="brand-logo" aria-hidden="true">◆</div>
-        <h1 class="brand-title">Aurora<span class="grad-text">Auth</span></h1>
-        <p class="brand-tagline">Truy cập an toàn, trải nghiệm cao cấp. Bảo mật chuẩn doanh nghiệp với thiết kế tinh tế.</p>
+        <!--
+          Hero logo Peak: dùng file android-chrome-512x512.png (set wordmark)
+          tải lên. Hiển thị cỡ lớn, sắc nét. Đặt là <h1> (visually hidden
+          text "Peak") để SEO / screen-reader vẫn đọc đúng tên dự án.
+        -->
+        <h1 class="brand-h1">
+          <span class="sr-only">Peak</span>
+          <img
+            src="icons/peak-wordmark.png"
+            alt="Peak"
+            class="brand-wordmark"
+            width="512" height="512"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </h1>
+
+        <p class="brand-tagline">Truy cập an toàn, trải nghiệm cao cấp.<br>Bảo mật chuẩn doanh nghiệp với thiết kế tinh tế.</p>
         <ul class="brand-features">
           <li><span class="dot"></span> Token kép &amp; mã hoá bcrypt</li>
-          <li><span class="dot"></span> Đăng nhập tức thì, ghi nhớ phiên</li>
-          <li><span class="dot"></span> Khôi phục mật khẩu bằng OTP</li>
+          <li><span class="dot"></span> Đăng nhập OTP &amp; sinh trắc học</li>
+          <li><span class="dot"></span> Quản lý phiên đa thiết bị</li>
         </ul>
       </div>
     </section>
 
     <!-- ===== Thẻ kính chứa các form ===== -->
     <section class="auth-card glass">
+      <!-- Brand mark nhỏ ở đầu card (chỉ hiện khi brand panel ẩn — màn hình nhỏ) -->
+      <div class="card-brand">
+        <img src="icons/peak-mark.png" alt="" class="card-brand-mark" width="48" height="48" />
+        <span class="card-brand-name">Peak</span>
+      </div>
+
       <div class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="login" role="tab">Đăng nhập</button>
         <button class="tab-btn" data-tab="register" role="tab">Đăng ký</button>
@@ -69,7 +107,7 @@
 
       <!-- Form Đăng ký -->
       <form id="register-form" class="auth-form" novalidate>
-        <h2>Tạo tài khoản mới ✨</h2>
+        <h2>Tạo tài khoản Peak ✨</h2>
         <p class="subtitle">Chỉ mất chưa đến một phút</p>
 
         <div class="field">
@@ -139,7 +177,7 @@
       <!-- Màn hình khi đã đăng nhập -->
       <div id="welcome-box" class="welcome-box">
         <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true"></div>
-        <h2>Đăng nhập thành công 🎉</h2>
+        <h2>Chào mừng đến Peak 🎉</h2>
         <p class="welcome-line">Xin chào, <strong id="welcome-name"></strong> <span id="welcome-role" class="role-badge"></span></p>
         <p class="subtitle" id="welcome-email"></p>
         <button id="logout-btn" class="btn-secondary"><span class="btn-label">Đăng xuất</span></button>
