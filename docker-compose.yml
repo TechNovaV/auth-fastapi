@@ -1,0 +1,24 @@
+# Chạy app bằng Docker — bạn của bạn chỉ cần:
+#   docker compose up --build
+# rồi mở http://localhost:8000
+
+services:
+  app:
+    build: .
+    image: auth-fastapi:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # SQLite trong volume /app/data => dữ liệu sống lâu hơn container.
+      DATABASE_URL: "sqlite:////app/data/auth.db"
+      APP_ENV: development
+      # Secret demo — KHÔNG dùng cho production!
+      JWT_SECRET: change-me-access-secret
+      JWT_REFRESH_SECRET: change-me-refresh-secret
+      CORS_ORIGINS: "http://localhost:8000"
+      # WebAuthn cho local
+      RP_ID: localhost
+      RP_ORIGIN: "http://localhost:8000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

@@ -2,6 +2,26 @@
 
 [![CI](https://github.com/TechNovaV/auth-fastapi/actions/workflows/ci.yml/badge.svg)](https://github.com/TechNovaV/auth-fastapi/actions/workflows/ci.yml)
 
+## 🚀 Dùng ngay (cho người được chia sẻ)
+
+**Cách 1 — GitHub Codespaces (1 click, không cài đặt):**
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/TechNovaV/auth-fastapi)
+
+Bấm nút trên (đăng nhập GitHub) → Codespace mở ra, FastAPI tự chạy → bấm tab **Ports** → mở URL cổng 8000. Free 60h/tháng.
+
+**Cách 2 — Docker (chạy local, 1 lệnh):**
+```bash
+git clone https://github.com/TechNovaV/auth-fastapi
+cd auth-fastapi
+docker compose up --build
+# mở http://localhost:8000
+```
+
+**Cách 3 — Python thủ công:** xem mục [Cài đặt & chạy](#cài-đặt--chạy-local) bên dưới.
+
+---
+
 Hệ thống Đăng nhập / Đăng ký an toàn: **Python (FastAPI)** + **MySQL** (qua SQLAlchemy ORM) và **Frontend HTML/CSS/JS thuần** (Clean Architecture 3 tầng + state management). FastAPI phục vụ luôn frontend nên chạy cùng origin.
 
 > Dùng SQLAlchemy ORM nên đổi DB chỉ cần đổi `DATABASE_URL` (MySQL ⇄ SQLite). Vì máy chưa cài MySQL, `.env` mặc định dùng **SQLite** để chạy được ngay; khi có MySQL thì bỏ comment dòng MySQL.

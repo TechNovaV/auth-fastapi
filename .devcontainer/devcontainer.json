@@ -1,0 +1,17 @@
+{
+  "name": "Auth FastAPI",
+  "build": { "dockerfile": "../Dockerfile" },
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Auth API + Frontend",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  },
+  "postAttachCommand": "bash .devcontainer/start.sh"
+}
