@@ -34,6 +34,19 @@ class Settings(BaseSettings):
     otp_ttl_minutes: int = 5
     mail_from: str = "no-reply@auth-demo.local"
 
+    # OTP đăng nhập SMS
+    sms_otp_ttl_minutes: int = 2     # hạn 2 phút theo yêu cầu
+    sms_otp_resend_seconds: int = 60 # tối thiểu giữa 2 lần gửi (chống spam)
+
+    # reCAPTCHA v3 (để trống = tắt, không chặn ở dev)
+    recaptcha_secret: str = ""
+    recaptcha_min_score: float = 0.5
+
+    # WebAuthn (FIDO2)
+    rp_id: str = "localhost"                          # tên miền (không kèm port/scheme)
+    rp_name: str = "Auth System"
+    rp_origin: str = "http://localhost:8000"           # origin của frontend
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

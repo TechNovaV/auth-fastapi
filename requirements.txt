@@ -8,4 +8,6 @@ pydantic[email]==2.13.4
 pydantic-settings==2.14.1
 python-multipart==0.0.29
 psycopg2-binary==2.9.10
+webauthn==2.7.1
+
 

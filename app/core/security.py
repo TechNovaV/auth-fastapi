@@ -32,24 +32,30 @@ def _create_token(payload: dict, secret: str, expires_delta: timedelta) -> str:
     return jwt.encode(to_encode, secret, algorithm="HS256")
 
 
-def create_access_token(user) -> str:
-    """Access token sống ngắn — nhúng cả role để middleware RBAC đọc nhanh."""
+def create_access_token(user, sid: str | None = None) -> str:
+    """Access token sống ngắn — nhúng role (RBAC) và sid (định danh phiên)."""
+    payload = {
+        "sub": str(user.id),
+        "email": user.email,
+        "username": user.username,
+        "role": user.role,
+    }
+    if sid:
+        payload["sid"] = sid
     return _create_token(
-        {
-            "sub": str(user.id),
-            "email": user.email,
-            "username": user.username,
-            "role": user.role,
-        },
+        payload,
         settings.jwt_secret,
         timedelta(minutes=settings.access_token_expires_min),
     )
 
 
-def create_refresh_token(user) -> str:
-    """Refresh token sống dài — chỉ chứa id, ký bằng secret riêng."""
+def create_refresh_token(user, sid: str | None = None) -> str:
+    """Refresh token sống dài — chứa id user + sid phiên."""
+    payload = {"sub": str(user.id)}
+    if sid:
+        payload["sid"] = sid
     return _create_token(
-        {"sub": str(user.id)},
+        payload,
         settings.jwt_refresh_secret,
         timedelta(days=settings.refresh_token_expires_days),
     )

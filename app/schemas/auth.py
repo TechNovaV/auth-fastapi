@@ -49,6 +49,7 @@ class RegisterIn(BaseModel):
     username: str
     email: EmailStr
     password: str
+    recaptcha_token: str | None = None   # gửi kèm khi bật reCAPTCHA v3
 
     @field_validator("username")
     @classmethod
@@ -67,6 +68,7 @@ class RegisterIn(BaseModel):
 class LoginIn(BaseModel):
     email: EmailStr
     password: str
+    recaptcha_token: str | None = None
 
 
 class ForgotIn(BaseModel):
@@ -96,7 +98,8 @@ class ResetIn(BaseModel):
 class UserOut(BaseModel):
     id: int
     username: str
-    email: EmailStr
+    email: EmailStr | None = None
+    phone: str | None = None
     role: str
     created_at: datetime | None = None
     last_login: datetime | None = None

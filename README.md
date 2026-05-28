@@ -106,6 +106,13 @@ python -m scripts.make_admin <email>
 | POST | `/api/forgot-password` | Gửi OTP về email (giả lập) | ❌ |
 | POST | `/api/reset-password` | Đổi mật khẩu bằng OTP | ❌ |
 | GET | `/api/admin/users` | (Nhạy cảm) Liệt kê user | ✅ Bearer + role `admin` |
+| POST | `/api/request-otp` | Gửi OTP SMS (TTL 2 phút) | ❌ |
+| POST | `/api/verify-otp` | Đăng nhập/đăng ký bằng OTP SMS | ❌ |
+| GET | `/api/sessions` | Liệt kê phiên/thiết bị | ✅ Bearer |
+| POST | `/api/sessions/logout-others` | Đăng xuất thiết bị khác | ✅ Bearer |
+| DELETE | `/api/sessions/{session_id}` | Đăng xuất 1 phiên cụ thể | ✅ Bearer |
+| POST | `/api/webauthn/register/begin\|finish` | Đăng ký vân tay/FaceID | ✅ Bearer |
+| POST | `/api/webauthn/login/begin\|finish` | Đăng nhập bằng vân tay/FaceID | ❌ (challenge) |
 
 ## Bảo mật
 
@@ -116,6 +123,31 @@ python -m scripts.make_admin <email>
 - **CORS chặt:** chỉ cho phép origin trong `CORS_ORIGINS`, bật `credentials`.
 - **Chống SQL/NoSQL Injection:** SQLAlchemy ORM tham số hoá toàn bộ truy vấn + Pydantic validate kiểu/định dạng đầu vào.
 - **Quên mật khẩu:** OTP 6 số ngẫu nhiên (`secrets`), chỉ lưu **hash**, hết hạn **5 phút**, giới hạn 5 lần nhập sai, thông báo lỗi chung chống dò email.
+
+## Module bảo mật doanh nghiệp (mới)
+
+### 1. Đăng nhập SMS-OTP (`/api/request-otp`, `/api/verify-otp`)
+OTP 6 số, hết hạn **2 phút**, chỉ lưu hash. Chống spam SMS bằng `SMS_OTP_RESEND_SECONDS` (mặc định 60s). Mailer giả lập SMS ghi vào `sent-sms.log`. Service phone-only tự tạo username (vòng `while` tăng hậu tố nếu trùng).
+
+### 2. Đăng nhập sinh trắc học — WebAuthn (FIDO2)
+4 endpoint: `/api/webauthn/{register,login}/{begin,finish}`. Server chỉ lưu **public key**; private key + vân tay/FaceID nằm trong **Secure Enclave/TPM** của thiết bị, không rời máy. Sau khi verify chữ ký, server **chủ động cấp Access/Refresh Token** giống đăng nhập thường (token KHÔNG được lưu sẵn trên thiết bị).
+- Cấu hình: `RP_ID` (domain), `RP_NAME`, `RP_ORIGIN`.
+- Thư viện: `webauthn==2.7.1`.
+
+### 3. Quản lý phiên/thiết bị (`device_sessions`)
+- Mọi access/refresh token đều mang `sid` (UUID phiên). Đăng nhập = tạo 1 `DeviceSession` (device_name parse từ UA, IP, last_active).
+- `GET /api/sessions` — liệt kê phiên đang hoạt động (đánh dấu phiên hiện tại).
+- `POST /api/sessions/logout-others` — đăng xuất các thiết bị KHÁC (giữ phiên hiện tại).
+- `DELETE /api/sessions/{session_id}` — đăng xuất 1 phiên cụ thể.
+- `POST /api/logout` — revoke phiên hiện tại + xoá cookie.
+- Refresh từ phiên đã revoke → 401.
+- **Lọc/xoá** trong session_repository được viết bằng `for/while` cơ bản (không list comprehension) theo yêu cầu.
+
+### 4. reCAPTCHA v3 (chống bot)
+Helper `verify_recaptcha(token, action)` (`app/utils/recaptcha.py`) gọi `https://www.google.com/recaptcha/api/siteverify`. Đã gắn vào `/login`, `/register`, `/request-otp`. Khi `RECAPTCHA_SECRET` để trống = tắt (chế độ dev). Cấu hình:
+1. Đăng ký site key + secret tại https://www.google.com/recaptcha/admin (loại v3).
+2. Đặt `RECAPTCHA_SECRET` (và `RECAPTCHA_MIN_SCORE`, mặc định 0.5) trong `.env`.
+3. Frontend nhúng script reCAPTCHA, gọi `grecaptcha.execute(siteKey,{action:'login'})` → gửi token kèm payload.
 
 ## Deploy
 

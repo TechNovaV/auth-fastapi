@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.routes_auth import router as auth_router
+from app.api.routes_phone import router as phone_router
+from app.api.routes_sessions import router as sessions_router
+from app.api.routes_webauthn import router as webauthn_router
 from app.core.config import settings
 from app.db.database import Base, engine
 from app.models import user as _user_models  # noqa: F401  (import để create_all thấy model)
@@ -33,6 +36,9 @@ def health():
 
 # Tất cả endpoint API dưới tiền tố /api (đăng ký TRƯỚC khi mount static "/").
 app.include_router(auth_router, prefix="/api")
+app.include_router(phone_router, prefix="/api")
+app.include_router(sessions_router, prefix="/api")
+app.include_router(webauthn_router, prefix="/api")
 
 # Phục vụ frontend tĩnh tại "/" => mở http://localhost:8000 là thấy giao diện.
 # Cùng origin với API nên cookie refresh (SameSite=Strict) hoạt động.

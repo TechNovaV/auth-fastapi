@@ -14,12 +14,30 @@ def get_by_username(db: Session, username: str) -> User | None:
     return db.scalar(select(User).where(User.username == username))
 
 
+def get_by_phone(db: Session, phone: str) -> User | None:
+    return db.scalar(select(User).where(User.phone == phone))
+
+
 def get_by_id(db: Session, user_id: int) -> User | None:
     return db.get(User, user_id)
 
 
-def create(db: Session, *, username: str, email: str, password_hash: str, role: str = "user") -> User:
-    user = User(username=username, email=email, password_hash=password_hash, role=role)
+def create(
+    db: Session,
+    *,
+    username: str,
+    email: str | None = None,
+    phone: str | None = None,
+    password_hash: str | None = None,
+    role: str = "user",
+) -> User:
+    user = User(
+        username=username,
+        email=email,
+        phone=phone,
+        password_hash=password_hash,
+        role=role,
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
