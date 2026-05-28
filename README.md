@@ -117,22 +117,11 @@ python -m scripts.make_admin <email>
 - **Chống SQL/NoSQL Injection:** SQLAlchemy ORM tham số hoá toàn bộ truy vấn + Pydantic validate kiểu/định dạng đầu vào.
 - **Quên mật khẩu:** OTP 6 số ngẫu nhiên (`secrets`), chỉ lưu **hash**, hết hạn **5 phút**, giới hạn 5 lần nhập sai, thông báo lỗi chung chống dò email.
 
-## Deploy lên Render (online)
+## Deploy
 
-> **Lưu ý:** GitHub chỉ lưu code — KHÔNG đẩy file database hay `.env` lên. Khi deploy, dùng Postgres do Render cấp và đặt secret qua Environment Variables.
+> **Lưu ý:** KHÔNG commit file database hay `.env`. Khi deploy, dùng DB do nền tảng cấp và đặt secret qua Environment Variables.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/TechNovaV/auth-fastapi)
-
-Repo có sẵn **Blueprint** [`render.yaml`](render.yaml) (web service FastAPI + Postgres). Bấm nút trên (hoặc làm thủ công), rồi đăng nhập Render và **Apply**. Các bước:
-
-1. Vào [dashboard.render.com](https://dashboard.render.com) → **New +** → **Blueprint** → chọn repo `auth-fastapi`.
-2. Render đọc `render.yaml`, tự tạo: 1 Postgres `auth-db` + 1 web service, tự sinh `JWT_SECRET`/`JWT_REFRESH_SECRET`, tự nối `DATABASE_URL`.
-3. Bấm **Apply** → chờ build (`pip install` + khởi động `uvicorn`). Bảng tự tạo lúc khởi động (`create_all`).
-4. Mở URL Render cấp (vd `https://auth-fastapi.onrender.com`) → giao diện chạy online; API ở `/api/*`, docs ở `/docs`.
-
-Tuỳ chọn: đặt `CORS_ORIGINS` = URL Render (chỉ cần nếu tách frontend khác origin). Gói free: web service "ngủ" sau ~15 phút không truy cập (cold start chậm lần đầu) và Postgres free hết hạn sau 90 ngày.
-
-> Code dùng SQLAlchemy nên cùng codebase chạy được SQLite (local) ↔ Postgres (Render) ↔ MySQL — chỉ khác `DATABASE_URL`. `database.py` tự chuẩn hoá `postgres://` → `postgresql+psycopg2://`.
+Code dùng SQLAlchemy nên cùng codebase chạy được SQLite (local) ↔ Postgres ↔ MySQL — chỉ khác `DATABASE_URL`. `database.py` tự chuẩn hoá `postgres://` → `postgresql+psycopg2://`.
 
 ## Đã kiểm thử
 
