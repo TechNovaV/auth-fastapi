@@ -1,50 +1,111 @@
 /* =====================================================================
-   PEAK — Premium UI (Dark Mode + Glassmorphism)
-   Brand: #F860C0 (Peak Pink — sample từ logo wordmark)
-   Hệ 60-30-10 · Font: Sora (display) + Inter (body)
+   PEAK — Premium UI · Light/Dark Mode + Glassmorphism
+   ---------------------------------------------------------------------
+   Cấu trúc file:
+     1) THEME TOKENS  — biến màu cho cả 2 mode (tách bạch khỏi UI).
+     2) GLOBAL        — body, transitions, accessibility.
+     3) COMPONENTS    — layout, brand, card, tabs, form, button, toast...
+   Brand: #F860C0 (Peak Pink, sample từ logo).
+   ===================================================================== */
+
+
+/* =====================================================================
+   1) THEME TOKENS
    ===================================================================== */
 
 :root {
-  /* 60% — Nền tối (dominant) */
-  --bg-900: #0B0F1A;
-  --bg-800: #131A2C;
-  --bg-700: #1B2237;
+  /* ---- Brand (dùng chung 2 mode) ---- */
+  --brand: #F860C0;
+  --brand-light: #FF8FD0;
+  --brand-deep:  #B83A8E;
+  --accent-2:    #7C3AED;
+  --success:     #34D399;
+  --error:       #FB7185;
+  --grad-cta: linear-gradient(135deg, #F860C0 0%, #B83A8E 55%, #7C3AED 100%);
 
-  /* 30% — Bề mặt kính & chữ trung tính */
+  /* ---- LIGHT MODE — mặc định ---- */
+  --bg-base: #F5F7FB;
+  --bg-soft: #FFFFFF;
+  --bg-deep: #E6EAF2;
+  --surface: rgba(255, 255, 255, 0.70);
+  --border: rgba(15, 23, 42, 0.10);
+  --border-strong: rgba(15, 23, 42, 0.18);
+  --text: #1B2237;
+  --muted: #5B6478;
+  --input-bg: rgba(255, 255, 255, 0.85);
+  --tabs-bg: rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 24px 60px rgba(20, 25, 50, 0.12);
+  --ring: 0 0 0 4px rgba(248, 96, 192, 0.22);
+  --particle: radial-gradient(circle at 30% 30%, rgba(248, 96, 192, 0.85), rgba(184, 58, 142, 0.4));
+  --aurora-1: rgba(248, 96, 192, 0.18);
+  --aurora-2: rgba(124, 58, 237, 0.12);
+  --aurora-3: rgba(184, 58, 142, 0.15);
+  --bg-gradient: linear-gradient(160deg, #F5F7FB, #E6EAF2 55%, #DDE2EE);
+
+  /* ---- Hệ thống ---- */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Hiệu ứng chuyển theme — dùng cho tất cả thuộc tính màu/border. */
+  --theme-transition: background-color .4s ease, color .4s ease,
+                      border-color .4s ease, box-shadow .4s ease,
+                      backdrop-filter .4s ease;
+}
+
+/* ---- DARK MODE — override khi <html data-theme="dark"> ---- */
+:root[data-theme="dark"] {
+  --bg-base: #0B0F1A;
+  --bg-soft: #131A2C;
+  --bg-deep: #1B2237;
   --surface: rgba(255, 255, 255, 0.06);
-  --surface-strong: rgba(255, 255, 255, 0.10);
   --border: rgba(255, 255, 255, 0.14);
   --border-strong: rgba(255, 255, 255, 0.28);
   --text: #EDF1F8;
   --muted: #97A0B5;
-
-  /* 10% — Peak Pink (màu thương hiệu) + violet phụ */
-  --brand: #F860C0;
-  --brand-light: #FF8FD0;
-  --brand-deep: #B83A8E;
-  --accent-2: #7C3AED;
-  --grad-cta: linear-gradient(135deg, #F860C0 0%, #B83A8E 55%, #7C3AED 100%);
-
-  /* Phản hồi */
-  --success: #34D399;
-  --error: #FB7185;
-
-  /* Hệ thống */
-  --radius: 18px;
-  --radius-sm: 12px;
+  --input-bg: rgba(0, 0, 0, 0.28);
+  --tabs-bg: rgba(0, 0, 0, 0.25);
   --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.55);
   --ring: 0 0 0 4px rgba(248, 96, 192, 0.28);
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --particle: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(248, 96, 192, 0.55));
+  --aurora-1: rgba(248, 96, 192, 0.40);
+  --aurora-2: rgba(124, 58, 237, 0.28);
+  --aurora-3: rgba(184, 58, 142, 0.36);
+  --bg-gradient: linear-gradient(160deg, #0B0F1A, #131A2C 55%, #1B2237);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Fallback khi JS không chạy: theo prefers-color-scheme hệ thống. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg-base: #0B0F1A;
+    --bg-soft: #131A2C;
+    --bg-deep: #1B2237;
+    --surface: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.14);
+    --text: #EDF1F8;
+    --muted: #97A0B5;
+    --input-bg: rgba(0, 0, 0, 0.28);
+    --tabs-bg: rgba(0, 0, 0, 0.25);
+    --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.55);
+    --aurora-1: rgba(248, 96, 192, 0.40);
+    --aurora-2: rgba(124, 58, 237, 0.28);
+    --aurora-3: rgba(184, 58, 142, 0.36);
+    --bg-gradient: linear-gradient(160deg, #0B0F1A, #131A2C 55%, #1B2237);
+  }
+}
 
+
+/* =====================================================================
+   2) GLOBAL
+   ===================================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: var(--text);
-  background: var(--bg-900);
+  background: var(--bg-base);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -52,100 +113,122 @@ body {
   padding: clamp(16px, 3vw, 48px);
   overflow-x: hidden;
   position: relative;
+  transition: var(--theme-transition);
 }
 
 h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
 
-/* Tiện ích screen-reader-only (giữ a11y khi logo là hình ảnh) */
 .sr-only {
   position: absolute !important;
   width: 1px; height: 1px;
   padding: 0; margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
 }
 
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+
 /* =====================================================================
-   NỀN: Aurora pink + hạt
+   3) COMPONENTS
    ===================================================================== */
+
+/* ---- Aurora background ---- */
 .bg-aurora {
   position: fixed;
   inset: -20%;
   z-index: -2;
   background:
-    radial-gradient(40% 40% at 20% 25%, rgba(248, 96, 192, 0.40), transparent 60%),
-    radial-gradient(35% 35% at 80% 20%, rgba(124, 58, 237, 0.28), transparent 60%),
-    radial-gradient(45% 45% at 70% 80%, rgba(184, 58, 142, 0.36), transparent 60%),
-    linear-gradient(160deg, var(--bg-900), var(--bg-800) 55%, var(--bg-700));
+    radial-gradient(40% 40% at 20% 25%, var(--aurora-1), transparent 60%),
+    radial-gradient(35% 35% at 80% 20%, var(--aurora-2), transparent 60%),
+    radial-gradient(45% 45% at 70% 80%, var(--aurora-3), transparent 60%),
+    var(--bg-gradient);
   filter: saturate(120%);
   animation: aurora-drift 18s var(--ease) infinite alternate;
+  transition: background .4s ease;
 }
-
 @keyframes aurora-drift {
-  0%   { transform: translate3d(0, 0, 0) scale(1); }
-  50%  { transform: translate3d(2%, -2%, 0) scale(1.06); }
-  100% { transform: translate3d(-2%, 2%, 0) scale(1.04); }
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(2%,-2%,0) scale(1.06); }
+  100% { transform: translate3d(-2%,2%,0) scale(1.04); }
 }
 
+/* ---- Particles ---- */
 .bg-particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-
 .particle {
   position: absolute;
   bottom: -20px;
-  width: var(--size, 6px);
-  height: var(--size, 6px);
+  width: var(--size, 6px); height: var(--size, 6px);
   border-radius: 50%;
-  /* Hạt nhuốm hồng để hợp brand Peak */
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(248, 96, 192, 0.55));
+  background: var(--particle);
   opacity: 0;
   animation: float-up var(--duration, 16s) linear infinite;
   animation-delay: var(--delay, 0s);
   filter: blur(0.4px);
 }
-
 @keyframes float-up {
   0%   { transform: translateY(0) translateX(0); opacity: 0; }
   10%  { opacity: 0.8; }
   90%  { opacity: 0.5; }
-  100% { transform: translateY(-105vh) translateX(var(--drift, 30px)); opacity: 0; }
+  100% { transform: translateY(-105vh) translateX(var(--drift,30px)); opacity: 0; }
 }
 
-/* =====================================================================
-   SPLASH LOADER
-   ===================================================================== */
-.app-loader {
+/* ---- THEME TOGGLE (Sun/Moon) ---- */
+.theme-toggle {
   position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(11, 15, 26, 0.88);
+  top: clamp(14px, 2vw, 22px);
+  right: clamp(14px, 2vw, 22px);
+  z-index: 50;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: grid; place-items: center;
+  cursor: pointer;
+  color: var(--text);
+  transition: var(--theme-transition), transform .25s var(--ease);
+}
+.theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(248, 96, 192, 0.25); }
+.theme-toggle:active { transform: translateY(0) scale(0.96); }
+.theme-toggle svg {
+  position: absolute;
+  width: 22px; height: 22px;
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+/* Default (light mode): hiện trăng (để bấm vào chuyển sang dark) */
+.theme-toggle .icon-sun  { opacity: 0; transform: rotate(90deg) scale(0.6); }
+.theme-toggle .icon-moon { opacity: 1; transform: rotate(0) scale(1); }
+/* Dark mode: hiện mặt trời (để bấm về light) */
+[data-theme="dark"] .theme-toggle .icon-sun  { opacity: 1; transform: rotate(0) scale(1); }
+[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+
+/* ---- Splash loader ---- */
+.app-loader {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; gap: 18px;
+  align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--bg-base) 90%, transparent);
   backdrop-filter: blur(8px);
-  transition: opacity 0.5s var(--ease), visibility 0.5s;
+  transition: opacity .5s var(--ease), visibility .5s, background .4s ease;
 }
 .app-loader.hidden-loader { opacity: 0; visibility: hidden; }
-
 .loader-ring {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.12);
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 3px solid var(--border);
   border-top-color: var(--brand);
   border-right-color: var(--brand-light);
-  animation: spin 0.9s linear infinite;
+  animation: spin .9s linear infinite;
 }
 .loader-text { color: var(--muted); font-size: 14px; letter-spacing: 0.02em; }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* =====================================================================
-   LAYOUT — Grid tỷ lệ vàng
-   ===================================================================== */
+/* ---- Layout golden-ratio ---- */
 .auth-layout {
   width: 100%;
   max-width: 1160px;
@@ -154,100 +237,112 @@ h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
   gap: clamp(24px, 4vw, 56px);
   align-items: center;
 }
-
 @media (min-width: 980px) {
-  /* Tỷ lệ vàng: brand : card ≈ 1.618 : 1 */
   .auth-layout { grid-template-columns: 1.618fr 1fr; }
 }
 
-/* =====================================================================
-   CỘT THƯƠNG HIỆU + Wordmark hero
-   ===================================================================== */
+/* ---- Brand panel + wordmark dynamic logo ---- */
 .brand-panel { display: none; }
-
 @media (min-width: 980px) {
-  .brand-panel { display: block; animation: rise-in 0.8s var(--ease) both; }
+  .brand-panel { display: block; animation: rise-in .8s var(--ease) both; }
 }
-
 .brand-h1 { display: block; margin-bottom: 26px; }
 
-/* Wordmark Peak ở hero — kích thước lớn, sắc nét, có glow nhịp đập tinh tế. */
-.brand-wordmark {
+/*
+   LOGO CROSS-FADE THEO THEME
+   --------------------------
+   Hai <img> chồng lên nhau, dùng opacity tạo hiệu ứng mờ dần khi đổi theme.
+   - .logo--dark hiện mặc định (giả định dark hoặc system dark)
+   - .logo--light hiện khi [data-theme="light"]
+*/
+.brand-wordmark-wrap {
+  position: relative;
+  display: inline-block;
   width: clamp(220px, 26vw, 360px);
-  height: auto;
-  display: block;
-  /* Glow êm ái quanh wordmark — drop-shadow tô vào pixel pink của logo. */
-  filter:
-    drop-shadow(0 0 18px rgba(248, 96, 192, 0.55))
-    drop-shadow(0 0 40px rgba(248, 96, 192, 0.25));
-  animation: logo-pulse 4s ease-in-out infinite;
-  transition: transform 0.4s var(--ease);
+  aspect-ratio: 1 / 1;
 }
-.brand-wordmark:hover { transform: scale(1.02); }
-
+.brand-wordmark {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  transition: opacity .45s var(--ease);
+  animation: logo-pulse 4s ease-in-out infinite;
+}
+.brand-wordmark.logo--light { opacity: 0; }
+[data-theme="light"] .brand-wordmark.logo--light { opacity: 1; }
+[data-theme="light"] .brand-wordmark.logo--dark  { opacity: 0; }
+/* Glow chỉ áp dụng cho dark mode (vì logo dark có outline pink mảnh hợp glow). */
+[data-theme="dark"] .brand-wordmark.logo--dark {
+  filter: drop-shadow(0 0 18px rgba(248, 96, 192, 0.55)) drop-shadow(0 0 40px rgba(248, 96, 192, 0.25));
+}
 @keyframes logo-pulse {
   0%, 100% { filter: drop-shadow(0 0 18px rgba(248, 96, 192, 0.45)) drop-shadow(0 0 40px rgba(248, 96, 192, 0.20)); }
   50%      { filter: drop-shadow(0 0 28px rgba(248, 96, 192, 0.75)) drop-shadow(0 0 60px rgba(248, 96, 192, 0.35)); }
 }
+/* Light mode: tắt animation glow (chữ đen không cần glow), giữ filter nhẹ. */
+[data-theme="light"] .brand-wordmark { animation: none; filter: none; }
 
 .brand-tagline {
   color: var(--muted);
   font-size: clamp(15px, 1.4vw, 18px);
   margin: 4px 0 28px;
-  max-width: 46ch;
-  line-height: 1.6;
+  max-width: 46ch; line-height: 1.6;
+  transition: color .4s ease;
 }
-
 .brand-features { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-.brand-features li { display: flex; align-items: center; gap: 12px; color: var(--text); font-size: 15px; }
+.brand-features li {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text); font-size: 15px;
+  transition: color .4s ease;
+}
 .brand-features .dot {
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--grad-cta);
-  box-shadow: 0 0 12px rgba(248, 96, 192, 0.75);
+  box-shadow: 0 0 12px rgba(248, 96, 192, 0.7);
 }
 
-/* =====================================================================
-   THẺ KÍNH (Glassmorphism)
-   ===================================================================== */
+/* ---- Auth card (Glassmorphism) ---- */
 .glass {
   background: var(--surface);
   border: 1px solid var(--border);
   backdrop-filter: blur(22px) saturate(140%);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
-
 .auth-card {
   position: relative;
   border-radius: var(--radius);
   padding: clamp(26px, 3vw, 38px);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  animation: rise-in 0.7s var(--ease) both;
+  animation: rise-in .7s var(--ease) both;
+  transition: var(--theme-transition);
 }
 .auth-card::before {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
 }
-
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Brand mark nhỏ trong card — chỉ hiện ở mobile (khi brand-panel ẩn). */
+/* ---- Card brand mini (cross-fade theo theme, chỉ hiện mobile) ---- */
 .card-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   margin-bottom: 18px;
 }
+.card-brand-mark-wrap { position: relative; width: 44px; height: 44px; flex: 0 0 44px; }
 .card-brand-mark {
-  width: 44px; height: 44px;
-  filter: drop-shadow(0 0 10px rgba(248, 96, 192, 0.55));
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: contain;
+  transition: opacity .45s var(--ease);
 }
+.card-brand-mark.logo--light { opacity: 0; }
+[data-theme="light"] .card-brand-mark.logo--light { opacity: 1; }
+[data-theme="light"] .card-brand-mark.logo--dark  { opacity: 0; }
+[data-theme="dark"] .card-brand-mark.logo--dark { filter: drop-shadow(0 0 8px rgba(248, 96, 192, 0.6)); }
+
 .card-brand-name {
   font-family: 'Sora', sans-serif;
   font-weight: 800;
@@ -256,101 +351,97 @@ h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.08em;  /* khoảng cách chữ rộng cho tên "Peak" */
 }
 @media (min-width: 980px) { .card-brand { display: none; } }
 
-/* ===== Tabs với thanh trượt ===== */
+/* ---- Tabs ---- */
 .tabs {
   position: relative;
   display: flex;
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--tabs-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 5px;
   margin-bottom: 26px;
+  transition: var(--theme-transition);
 }
 .tab-btn {
-  flex: 1;
-  position: relative;
-  z-index: 2;
+  flex: 1; position: relative; z-index: 2;
   padding: 11px;
-  border: none;
-  background: transparent;
-  border-radius: 9px;
+  border: none; background: transparent; border-radius: 9px;
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 15px; font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  transition: color 0.3s var(--ease);
+  transition: color .3s var(--ease);
 }
 .tab-btn.active { color: #fff; }
-
 .tab-indicator {
-  position: absolute;
-  z-index: 1;
-  top: 5px;
-  left: 5px;
-  width: calc(50% - 5px);
-  height: calc(100% - 10px);
+  position: absolute; z-index: 1;
+  top: 5px; left: 5px;
+  width: calc(50% - 5px); height: calc(100% - 10px);
   border-radius: 9px;
   background: var(--grad-cta);
   box-shadow: 0 8px 22px rgba(248, 96, 192, 0.5);
-  transition: transform 0.38s var(--ease);
+  transition: transform .38s var(--ease);
 }
 .tabs:has(.tab-btn[data-tab="register"].active) .tab-indicator { transform: translateX(100%); }
 
-/* ===== Form ===== */
-.auth-form { display: none; flex-direction: column; gap: 16px; animation: fade-in 0.45s var(--ease); }
+/* ---- Forms ---- */
+.auth-form { display: none; flex-direction: column; gap: 16px; animation: fade-in .45s var(--ease); }
 .auth-form.active { display: flex; }
 #forgot-screen form { display: flex; flex-direction: column; gap: 16px; }
-
 @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 .auth-form h2 { font-size: clamp(21px, 2.4vw, 26px); }
-.subtitle { color: var(--muted); font-size: 14px; margin-top: -8px; }
+.subtitle { color: var(--muted); font-size: 14px; margin-top: -8px; transition: color .4s ease; }
 
 .field { display: flex; flex-direction: column; gap: 7px; }
-.field label { font-size: 13.5px; font-weight: 600; color: var(--muted); transition: color 0.25s var(--ease); }
-.field:focus-within label { color: var(--brand-light); }
+.field label {
+  font-size: 13.5px; font-weight: 600; color: var(--muted);
+  transition: color .25s var(--ease);
+}
+.field:focus-within label { color: var(--brand); }
 
 .field input {
   width: 100%;
   padding: 13px 15px;
   color: var(--text);
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--input-bg);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: 'Inter', sans-serif;
   font-size: 15px;
-  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+  transition: var(--theme-transition), border-color .25s var(--ease);
 }
-.field input::placeholder { color: #5b6478; }
+.field input::placeholder { color: var(--muted); opacity: 0.6; }
 .field input:focus {
   outline: none;
   border-color: var(--brand);
-  background: rgba(0, 0, 0, 0.4);
   box-shadow: var(--ring);
 }
-.field input.invalid { border-color: var(--error); box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.22); }
+.field input.invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.22);
+}
+.error-msg {
+  color: var(--error);
+  font-size: 12.5px; min-height: 15px;
+}
 
-.error-msg { color: var(--error); font-size: 12.5px; min-height: 15px; transition: opacity 0.2s; }
-
-/* ===== Nút ===== */
+/* ---- Buttons ---- */
 .btn-primary, .btn-secondary {
   position: relative;
   padding: 14px;
   border: none;
   border-radius: var(--radius-sm);
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 15px; font-weight: 700;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.18s var(--ease), box-shadow 0.25s var(--ease), filter 0.25s var(--ease);
+  transition: transform .18s var(--ease), box-shadow .25s var(--ease), filter .25s var(--ease), background .4s ease;
 }
-
 .btn-primary {
   color: #fff;
   background: var(--grad-cta);
@@ -365,9 +456,9 @@ h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
   position: absolute;
   top: 0; left: -120%;
   width: 60%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
   transform: skewX(-20deg);
-  transition: left 0.6s var(--ease);
+  transition: left .6s var(--ease);
 }
 .btn-primary:hover::before { left: 130%; }
 
@@ -378,13 +469,12 @@ h1, h2, .brand-h1 { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
 
 .btn-secondary {
   color: var(--text);
-  background: var(--surface-strong);
+  background: var(--surface);
   border: 1px solid var(--border);
   margin-top: 18px;
 }
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-2px); }
+.btn-secondary:hover { background: var(--input-bg); transform: translateY(-2px); }
 
-/* Trạng thái loading: ẩn label, hiện spinner */
 button:disabled { cursor: not-allowed; animation: none; }
 .btn-primary:disabled, .btn-secondary:disabled { filter: saturate(0.7) brightness(0.95); transform: none; }
 button:disabled .btn-label { opacity: 0; }
@@ -395,31 +485,30 @@ button:disabled::after {
   width: 20px; height: 20px;
   margin: -10px 0 0 -10px;
   border-radius: 50%;
-  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border: 2.5px solid rgba(255,255,255,0.35);
   border-top-color: #fff;
-  animation: spin 0.7s linear infinite;
+  animation: spin .7s linear infinite;
 }
 
-/* ===== Footer / link ===== */
 .form-foot { margin-top: 14px; text-align: center; font-size: 14px; }
 .link {
-  color: var(--brand-light);
+  color: var(--brand);
   text-decoration: none;
   font-weight: 600;
   cursor: pointer;
-  transition: color 0.2s, text-shadow 0.2s;
+  transition: color .2s, text-shadow .2s;
 }
-.link:hover { color: #fff; text-shadow: 0 0 12px rgba(248, 96, 192, 0.6); }
-
+.link:hover { color: var(--brand-deep); text-shadow: 0 0 12px rgba(248, 96, 192, 0.4); }
 .hidden { display: none !important; }
 
-/* ===== Welcome ===== */
-.welcome-box { display: none; flex-direction: column; align-items: center; gap: 12px; text-align: center; animation: fade-in 0.5s var(--ease); }
+/* ---- Welcome ---- */
+.welcome-box {
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center; animation: fade-in .5s var(--ease);
+}
 .welcome-box.active { display: flex; }
-
 .welcome-avatar {
-  width: 76px; height: 76px;
-  border-radius: 50%;
+  width: 76px; height: 76px; border-radius: 50%;
   display: grid; place-items: center;
   font-family: 'Sora', sans-serif;
   font-size: 30px; font-weight: 700; color: #fff;
@@ -436,41 +525,35 @@ button:disabled::after {
   font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
   text-transform: uppercase;
   vertical-align: middle;
-  background: var(--surface-strong);
+  background: var(--surface);
   border: 1px solid var(--border);
   color: var(--muted);
 }
 .role-badge.admin { background: var(--grad-cta); border: none; color: #fff; }
 
-/* =====================================================================
-   TOAST premium (glass + icon + progress bar)
-   ===================================================================== */
+/* ---- Toast ---- */
 .toast-container {
-  position: fixed;
-  top: 22px; right: 22px;
+  position: fixed; top: 22px; right: 80px;  /* chừa chỗ cho theme-toggle */
   z-index: 200;
   display: flex; flex-direction: column; gap: 12px;
-  max-width: min(360px, calc(100vw - 32px));
+  max-width: min(360px, calc(100vw - 100px));
 }
-
 .toast {
   position: relative;
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px;
   border-radius: 14px;
   color: var(--text);
-  background: rgba(19, 26, 44, 0.72);
+  background: var(--surface);
   border: 1px solid var(--border);
   backdrop-filter: blur(16px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
-  animation: toast-in 0.4s var(--ease);
+  animation: toast-in .4s var(--ease);
 }
-.toast.toast-out { animation: toast-out 0.35s var(--ease) forwards; }
-
+.toast.toast-out { animation: toast-out .35s var(--ease) forwards; }
 .toast .toast-icon {
-  flex: 0 0 30px;
-  width: 30px; height: 30px;
+  flex: 0 0 30px; width: 30px; height: 30px;
   border-radius: 50%;
   display: grid; place-items: center;
   font-size: 16px; font-weight: 700; color: #fff;
@@ -478,40 +561,29 @@ button:disabled::after {
 .toast.success .toast-icon { background: rgba(52, 211, 153, 0.22); color: var(--success); }
 .toast.error   .toast-icon { background: rgba(251, 113, 133, 0.22); color: var(--error); }
 .toast .toast-msg { font-size: 14px; line-height: 1.4; }
-
 .toast .toast-bar {
-  position: absolute;
-  left: 0; bottom: 0;
+  position: absolute; left: 0; bottom: 0;
   height: 3px; width: 100%;
   transform-origin: left;
   animation: toast-bar 3.5s linear forwards;
 }
 .toast.success .toast-bar { background: var(--success); }
 .toast.error   .toast-bar { background: var(--error); }
-
 @keyframes toast-in  { from { opacity: 0; transform: translateX(120%); } to { opacity: 1; transform: translateX(0); } }
-@keyframes toast-out { to { opacity: 0; transform: translateX(120%); } }
+@keyframes toast-out { to   { opacity: 0; transform: translateX(120%); } }
 @keyframes toast-bar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 
-/* ===== Skeleton shimmer (utility) ===== */
+/* ---- Skeleton shimmer (utility) ---- */
 .skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.14) 37%, rgba(255,255,255,0.05) 63%);
+  background: linear-gradient(90deg, var(--surface) 25%, var(--input-bg) 37%, var(--surface) 63%);
   background-size: 400% 100%;
   border-radius: 8px;
   animation: shimmer 1.4s ease infinite;
 }
 @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 
-/* =====================================================================
-   RESPONSIVE & A11Y
-   ===================================================================== */
+/* ---- Responsive ---- */
 @media (max-width: 420px) {
   .auth-card { padding: 22px 18px; }
-  .toast-container { left: 16px; right: 16px; top: 16px; max-width: none; }
-}
-
-:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 2px; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .toast-container { left: 16px; right: 16px; top: 72px; max-width: none; }
 }

@@ -5,17 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Peak — Premium Access</title>
   <meta name="description" content="Peak — đăng nhập an toàn, trải nghiệm cao cấp." />
-  <meta name="theme-color" content="#0B0F1A" />
+  <!-- theme-color thay đổi theo mode (giúp thanh URL trình duyệt mobile match màu app) -->
+  <meta name="theme-color" content="#F5F7FB" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)" />
 
-  <!-- ===== Brand identity: favicons & PWA manifest =====
-       Bộ icon dạng monogram "P" (outline pink) — đồng style với wordmark
-       hero ở trang. Trình duyệt sẽ tự chọn cỡ phù hợp cho từng vị trí:
-        - favicon-16x16.png / 32x32.png: tab trình duyệt
-        - favicon.ico:                   fallback cho browser cũ
-        - apple-touch-icon.png:          home screen iOS / Safari pinned tab
-        - android-chrome-*.png:          home screen Android, PWA install
-        - site.webmanifest:              metadata PWA (name "Peak", màu chủ đạo)
+  <!--
+    ⚡ FOUC-PREVENTION INLINE SCRIPT
+    Chạy TRƯỚC khi CSS tải để gắn data-theme đúng ngay từ frame đầu tiên,
+    tránh chớp giật màn hình.
+    Ưu tiên: localStorage (override thủ công) -> prefers-color-scheme hệ thống.
   -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('peak-theme');
+        var isDark = stored
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <!-- Brand identity: favicons & PWA manifest -->
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
   <link rel="shortcut icon" href="icons/favicon.ico" />
@@ -30,35 +44,50 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- Lớp nền: aurora gradient động + hạt lơ lửng -->
+  <!-- Lớp nền: aurora + hạt -->
   <div class="bg-aurora" aria-hidden="true"></div>
   <div class="bg-particles" id="particles" aria-hidden="true"></div>
 
-  <!-- Splash loader (auto-login lần đầu) -->
+  <!--
+    🌗 NÚT CHUYỂN THEME (override thủ công)
+    Hai SVG icon (sun + moon) chồng nhau, CSS điều khiển opacity theo data-theme.
+    Click -> theme.js gọi toggle() -> set data-theme + lưu localStorage.
+  -->
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Đổi chế độ sáng/tối">
+    <!-- Moon icon: hiện khi đang Light Mode (gợi ý sang Dark) -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    <!-- Sun icon: hiện khi đang Dark Mode (gợi ý sang Light) -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </svg>
+  </button>
+
+  <!-- Splash loader (auto-login) -->
   <div class="app-loader" id="app-loader">
     <div class="loader-ring"></div>
     <p class="loader-text">Đang khởi tạo phiên…</p>
   </div>
 
   <main class="auth-layout">
-    <!-- ===== Cột thương hiệu (ẩn ở màn hình nhỏ) ===== -->
+    <!-- ===== Cột thương hiệu ===== -->
     <section class="brand-panel">
       <div class="brand-content">
         <!--
-          Hero logo Peak: dùng file android-chrome-512x512.png (set wordmark)
-          tải lên. Hiển thị cỡ lớn, sắc nét. Đặt là <h1> (visually hidden
-          text "Peak") để SEO / screen-reader vẫn đọc đúng tên dự án.
+          🖼️ DYNAMIC LOGO — đổi theo theme
+          Hai ảnh chồng nhau bằng position:absolute, CSS điều khiển opacity:
+            • [data-theme="dark"]  -> hiện logo--dark  (outline pink trên nền đen)
+            • [data-theme="light"] -> hiện logo--light (chữ đen filled + outline pink)
+          Hiệu ứng cross-fade 0.45s khi đổi theme. Không cần JS đổi src.
         -->
         <h1 class="brand-h1">
           <span class="sr-only">Peak</span>
-          <img
-            src="icons/peak-wordmark.png"
-            alt="Peak"
-            class="brand-wordmark"
-            width="512" height="512"
-            decoding="async"
-            fetchpriority="high"
-          />
+          <span class="brand-wordmark-wrap">
+            <img src="icons/peak-wordmark.png"       alt="Peak" class="brand-wordmark logo--dark"  width="512" height="512" decoding="async" />
+            <img src="icons/peak-wordmark-light.png" alt=""     class="brand-wordmark logo--light" width="512" height="512" decoding="async" aria-hidden="true" />
+          </span>
         </h1>
 
         <p class="brand-tagline">Truy cập an toàn, trải nghiệm cao cấp.<br>Bảo mật chuẩn doanh nghiệp với thiết kế tinh tế.</p>
@@ -72,10 +101,13 @@
 
     <!-- ===== Thẻ kính chứa các form ===== -->
     <section class="auth-card glass">
-      <!-- Brand mark nhỏ ở đầu card (chỉ hiện khi brand panel ẩn — màn hình nhỏ) -->
+      <!-- Brand mark mini (chỉ hiện mobile) — cũng cross-fade theo theme -->
       <div class="card-brand">
-        <img src="icons/peak-mark.png" alt="" class="card-brand-mark" width="48" height="48" />
-        <span class="card-brand-name">Peak</span>
+        <span class="card-brand-mark-wrap">
+          <img src="icons/peak-mark.png"       alt="" class="card-brand-mark logo--dark"  width="44" height="44" aria-hidden="true" />
+          <img src="icons/peak-mark-light.png" alt="" class="card-brand-mark logo--light" width="44" height="44" aria-hidden="true" />
+        </span>
+        <span class="card-brand-name">PEAK</span>
       </div>
 
       <div class="tabs" role="tablist">
@@ -174,7 +206,7 @@
         <p class="form-foot"><a href="#" id="back-to-login" class="link">← Quay lại đăng nhập</a></p>
       </div>
 
-      <!-- Màn hình khi đã đăng nhập -->
+      <!-- Welcome -->
       <div id="welcome-box" class="welcome-box">
         <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true"></div>
         <h2>Chào mừng đến Peak 🎉</h2>
